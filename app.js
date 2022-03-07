@@ -1,10 +1,10 @@
-const { create } = require("ipfs-http-client");
+const { create, globSource } = require("ipfs-http-client");
 const express = require("express");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 const fs = require('fs');
 
-const ipfs = create();
+const ipfs = create('/ip4/127.0.0.1/tcp/5001');
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -38,8 +38,7 @@ app.post('/upload', (req, res) => {
 const addFile = async (fileName, filePath) => {
     const file = fs.readFileSync(filePath);
     const fileAdded = await ipfs.add({ path: fileName, content: file });
-    const fileHash = fileAdded[0].hash;
-
+    const fileHash = fileAdded.cid;
     return fileHash;
 };
 
